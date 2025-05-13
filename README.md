@@ -21,7 +21,7 @@ cd data
 ```
 
 ### 3. Create the security_incidents.csv file inside the data folder.
-Still inside the data folder, run the following command to create the CSV file:
+Still inside the data folder, run the following command in your terminal to create the CSV file:
 ```bash
 @"
 Timestamp,Category,Severity,SourceIP,DestinationIP,Duration
