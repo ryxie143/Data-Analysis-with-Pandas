@@ -45,31 +45,22 @@ New-Item analyze_security.py -ItemType File
 Next, open the analyze_security.py file and paste the following Python code inside it:
 ```python
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Load the CSV file into a DataFrame
 df = pd.read_csv('data/security_incidents.csv')
 
-# Analyze total number of incidents by severity
-incident_count_by_severity = df['Severity'].value_counts()
+# Visualization: Incident Count by Severity
+plt.figure(figsize=(8, 6))
+sns.countplot(data=df, x='Severity', palette='viridis')
+plt.title("Incident Count by Severity")
+plt.show()
 
-# Filter incidents with High severity
-high_severity_incidents = df[df['Severity'] == 'High']
-
-# Summary statistics by Category
-incident_summary_by_category = df.groupby('Category').agg({
-    'Severity': 'count',
-    'Duration': 'mean'
-})
-
-# Print results
-print("Incident Count by Severity:")
-print(incident_count_by_severity)
-
-print("\nHigh Severity Incidents:")
-print(high_severity_incidents)
-
-print("\nIncident Summary by Category:")
-print(incident_summary_by_category)
+# Real-time Alerts: Send an email if there's a High Severity incident
+if 'High' in df['Severity'].values:
+    print("High Severity Incident Detected!")
+    # Code for sending email alert would go here (e.g., using smtplib)
 ```
 
 ### 5. Install virtual environment 
@@ -85,7 +76,7 @@ venv\Scripts\Activate
 ### 6. Install pandas in the Virtual Environment
 Install the pandas library within your virtual environment:
 ```bash
-pip install pandas
+pip install pandas matplotlib seaborn
 ```
 
 ### 7. Run the Python Script
