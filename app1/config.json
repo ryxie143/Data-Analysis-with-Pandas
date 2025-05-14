@@ -1,0 +1,5 @@
+{
+  "targets": ["50.6.160.47"],
+  "report_format": "html",
+  "output_file": "vulnerability_report.html"
+}
