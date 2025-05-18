@@ -12,83 +12,79 @@ pip install pywin32
 import ctypes
 import time
 import sys
-from ctypes.wintypes import BOOL, DWORD, HANDLE
 
 # ===== CONFIG =====
-FLIP_DURATION = 30  # How long to stay flipped (seconds)
+FLIP_DURATION = 30  # Seconds to stay flipped (0=permanent)
+FLIP_DEGREES = 180  # 0=normal, 90=right, 180=upside, 270=left
 # ==================
 
-def flip_screen(degrees):
-    """Rotates the screen using Windows API"""
+def rotate_screen(degrees=0):
+    """Reliable screen rotation using direct registry access"""
     try:
-        # Load required DLLs
-        user32 = ctypes.WinDLL('user32')
-        gdi32 = ctypes.WinDLL('gdi32')
+        # Map degrees to orientation codes
+        orientation = {
+            0: 0,
+            90: 3,
+            180: 2,
+            270: 1
+        }.get(degrees, 0)
         
-        # Define necessary structures
-        class _DISPLAY_DEVICE(ctypes.Structure):
-            _fields_ = [
-                ('cb', DWORD),
-                ('DeviceName', ctypes.c_wchar * 32),
-                ('DeviceString', ctypes.c_wchar * 128),
-                ('StateFlags', DWORD),
-                ('DeviceID', ctypes.c_wchar * 128),
-                ('DeviceKey', ctypes.c_wchar * 128)
-            ]
+        # Access registry directly
+        from winreg import (
+            ConnectRegistry,
+            OpenKey,
+            SetValueEx,
+            KEY_ALL_ACCESS,
+            HKEY_LOCAL_MACHINE
+        )
         
-        # Get display device
-        disp_dev = _DISPLAY_DEVICE()
-        disp_dev.cb = ctypes.sizeof(disp_dev)
+        # Intel/NVIDIA/AMD registry path
+        reg_path = r"SYSTEM\CurrentControlSet\Control\GraphicsDrivers\Configuration"
         
-        # Get current display settings
-        devmode = ctypes.create_string_buffer(156)
-        ctypes.memset(devmode, 0, 156)
-        devmode[0:2] = b'\x1C\x00'  # Set dmSize and dmDriverExtra
+        # Connect to registry
+        registry = ConnectRegistry(None, HKEY_LOCAL_MACHINE)
+        config_key = OpenKey(registry, reg_path, 0, KEY_ALL_ACCESS)
         
-        # Try to rotate all displays
-        for i in range(4):  # Try first 4 displays
-            if user32.EnumDisplayDevicesW(None, i, ctypes.byref(disp_dev), 0):
-                if user32.EnumDisplaySettingsW(disp_dev.DeviceName, -1, devmode):
-                    # Modify orientation
-                    devmode[104:108] = degrees.to_bytes(4, 'little')  # dmDisplayOrientation
-                    user32.ChangeDisplaySettingsExW(
-                        disp_dev.DeviceName,
-                        devmode,
-                        None,
-                        0x00000001 | 0x00000004,  # CDS_UPDATEREGISTRY | CDS_NORESET
-                        None
-                    )
+        # Apply rotation to all displays
+        i = 0
+        while True:
+            try:
+                subkey_name = EnumKey(config_key, i)
+                subkey = OpenKey(config_key, subkey_name)
+                SetValueEx(subkey, "Rotate", 0, 4, orientation)  # 4 = REG_DWORD
+                CloseKey(subkey)
+                i += 1
+            except:
+                break
         
-        # Apply changes to all displays
-        user32.ChangeDisplaySettingsExW(None, None, None, 0, None)
+        # Force display refresh
+        ctypes.windll.user32.ChangeDisplaySettingsExW(None, None, None, 0, None)
         return True
     except:
         return False
 
 def main():
-    print("=== Desktop Flip Prank ===")
-    print(f"Screen will flip for {FLIP_DURATION} seconds")
-    print("Press CTRL+C to abort early\n")
+    print("=== Working Screen Flip Prank ===")
+    print(f"Attempting to rotate screen {FLIP_DEGREES}° for {FLIP_DURATION} sec")
     
-    try:
-        # Flip screen upside down (180 degrees)
-        if flip_screen(180):
-            print("Screen flipped successfully!")
-            print("Watch them struggle with upside-down controls!")
-            
-            # Countdown timer
+    # Try rotation
+    if rotate_screen(FLIP_DEGREES):
+        print("Success! Screen should be flipped now")
+        
+        # Countdown timer
+        try:
             for i in range(FLIP_DURATION, 0, -1):
                 print(f"Time remaining: {i} seconds", end='\r')
                 time.sleep(1)
-            
-            # Restore original orientation
-            flip_screen(0)
-            print("\nScreen orientation restored!")
-        else:
-            print("Failed to flip screen (graphics driver may not support rotation)")
-    except KeyboardInterrupt:
-        flip_screen(0)  # Ensure we restore if aborted
-        print("\nPrank aborted - screen restored")
+        except KeyboardInterrupt:
+            pass
+        finally:
+            if FLIP_DURATION > 0:
+                rotate_screen(0)  # Restore
+                print("\nScreen orientation restored!")
+    else:
+        print("Failed - your graphics driver may not support rotation")
+        print("Try updating your graphics drivers")
 
 if __name__ == "__main__":
     main()
