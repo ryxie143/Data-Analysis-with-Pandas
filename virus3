@@ -1,0 +1,91 @@
+# **Step-by-Step: Fake Error Messages Prank (Python)**
+
+This harmless prank displays fake system error messages that look real but don't actually affect the computer. Perfect for tech-savvy pranksters!
+
+## **Step 1: Install Required Library**
+```cmd
+pip install pywin32
+```
+
+## **Step 2: Create the Script (`fake_error.py`)**
+```python
+import random
+import time
+import win32gui
+import win32con
+
+# ===== CONFIG =====
+MESSAGE_COUNT = 5           # Number of fake errors to show
+DELAY_SECONDS = 3           # Time between messages (seconds)
+# ==================
+
+ERROR_MESSAGES = [
+    "CRITICAL ERROR: Keyboard not detected. Press any key to continue.",
+    "WARNING: Virus detected in system32!",
+    "ALERT: Your computer has been hacked by aliens!",
+    "ERROR 404: Intelligence module not found.",
+    "SYSTEM FAILURE: Too many cat videos detected.",
+    "WARNING: Your warranty expired yesterday.",
+    "ALERT: Missing DLL file - C:\\Windows\\System32\\common_sense.dll",
+    "CRITICAL: Your computer just failed the Turing test.",
+]
+
+def show_fake_error():
+    """Displays a fake error message"""
+    title = random.choice(["ERROR", "WARNING", "CRITICAL ALERT", "SYSTEM MESSAGE"])
+    icon = random.choice([win32con.MB_ICONERROR, win32con.MB_ICONWARNING])
+    
+    win32gui.MessageBox(
+        0,
+        random.choice(ERROR_MESSAGES),
+        title,
+        win32con.MB_OK | icon | win32con.MB_SYSTEMMODAL
+    )
+
+def main():
+    print("Starting fake error prank... (Press CTRL+C to stop early)\n")
+    
+    for i in range(MESSAGE_COUNT):
+        try:
+            show_fake_error()
+            time.sleep(DELAY_SECONDS)
+        except KeyboardInterrupt:
+            print("\nPrank stopped by user!")
+            return
+    
+    print("\nPrank complete! Hope they fell for it!")
+    show_fake_error()  # One final error for fun
+
+if __name__ == "__main__":
+    main()
+```
+
+## **Step 3: Customize the Prank**
+1. **Edit `ERROR_MESSAGES`** list with your own funny messages
+2. Adjust `MESSAGE_COUNT` and `DELAY_SECONDS` as needed
+3. For more realism, add technical-looking error codes
+
+## **Step 4: Run the Prank**
+```cmd
+python fake_error.py
+```
+
+## **Step 5: Extra Pranks (Optional)**
+1. **Make it persistent** (add a `while True` loop)
+2. **Add sound effects** with `winsound`:
+   ```python
+   import winsound
+   winsound.MessageBeep(winsound.MB_ICONHAND)  # Error sound
+   ```
+3. **Combine with other pranks** like flying folders
+
+## **How It Works**
+- Uses Windows API to create real-looking message boxes
+- System-modal windows force attention
+- Random selection keeps it unpredictable
+- Completely harmless (no actual system changes)
+
+## **Pro Tip**
+For maximum effect, set this as a startup script so it runs when they log in!
+
+**⚠️ Remember:** Only use with friends who will appreciate the joke, and never on work/school computers!
