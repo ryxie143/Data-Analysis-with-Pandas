@@ -13,10 +13,14 @@ import random
 import time
 import win32gui
 import win32con
+import winsound
+from threading import Thread
 
 # ===== CONFIG =====
-MESSAGE_COUNT = 5           # Number of fake errors to show
-DELAY_SECONDS = 3           # Time between messages (seconds)
+MIN_DELAY = 5               # Minimum seconds between errors
+MAX_DELAY = 30              # Maximum seconds between errors
+ERROR_SOUND = True          # Play warning sound with errors
+RUN_IN_BACKGROUND = True    # Hide console window when running
 # ==================
 
 ERROR_MESSAGES = [
@@ -28,12 +32,17 @@ ERROR_MESSAGES = [
     "WARNING: Your warranty expired yesterday.",
     "ALERT: Missing DLL file - C:\\Windows\\System32\\common_sense.dll",
     "CRITICAL: Your computer just failed the Turing test.",
+    "MEMORY LEAK: All your RAM is leaking out the USB ports!",
+    "ERROR: Monitor resolution too high for human comprehension",
 ]
 
 def show_fake_error():
-    """Displays a fake error message"""
+    """Displays a fake error message with sound"""
     title = random.choice(["ERROR", "WARNING", "CRITICAL ALERT", "SYSTEM MESSAGE"])
     icon = random.choice([win32con.MB_ICONERROR, win32con.MB_ICONWARNING])
+    
+    if ERROR_SOUND:
+        Thread(target=winsound.MessageBeep, args=(winsound.MB_ICONHAND,)).start()
     
     win32gui.MessageBox(
         0,
@@ -42,19 +51,25 @@ def show_fake_error():
         win32con.MB_OK | icon | win32con.MB_SYSTEMMODAL
     )
 
+def hide_console():
+    """Hides the console window"""
+    import ctypes
+    ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
+
 def main():
-    print("Starting fake error prank... (Press CTRL+C to stop early)\n")
+    if RUN_IN_BACKGROUND:
+        hide_console()
     
-    for i in range(MESSAGE_COUNT):
+    print("Fake error prank running in background...")
+    print("To stop: Open Task Manager and end pythonw.exe")
+    
+    while True:
         try:
             show_fake_error()
-            time.sleep(DELAY_SECONDS)
-        except KeyboardInterrupt:
-            print("\nPrank stopped by user!")
-            return
-    
-    print("\nPrank complete! Hope they fell for it!")
-    show_fake_error()  # One final error for fun
+            wait_time = random.randint(MIN_DELAY, MAX_DELAY)
+            time.sleep(wait_time)
+        except:
+            break
 
 if __name__ == "__main__":
     main()
