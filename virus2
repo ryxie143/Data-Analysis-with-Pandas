@@ -9,71 +9,60 @@ Make sure you have Python installed from [python.org](https://www.python.org/)
 ```python
 import os
 import time
-import sys
+import shutil
 from threading import Thread
 
 # ===== CONFIG =====
-FOLDER_NAME = "INFINITE_FOLDER_PRANK"  # Will appear on your Desktop
-DELAY_SECONDS = 0.5                    # Time between folders (0.5s = easy to see)
-RUN_TIME_MINUTES = 1                   # Auto-stop after 1 minute
+FOLDER_NAME = "FOLDER_INVASION"    # Name of the main folder
+DELAY_SECONDS = 0.3                # Speed of appearance (0.3s is optimal)
+TOTAL_FOLDERS = 50                 # Total folders to create (stops automatically)
 # ==================
 
-def verify_desktop():
-    """Double-checks we're targeting the real Desktop"""
+def get_desktop_path():
+    """Get the correct Desktop path (works with OneDrive too)"""
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     if not os.path.exists(desktop):
         desktop = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
     return desktop
 
-def create_folders():
-    """Creates clearly visible nested folders"""
-    desktop = verify_desktop()
+def create_visible_folders():
+    """Creates folders that visibly appear on Desktop"""
+    desktop = get_desktop_path()
     root_path = os.path.join(desktop, FOLDER_NAME)
     
-    # Create root folder with warning note
-    os.makedirs(root_path, exist_ok=True)
-    with open(os.path.join(root_path, "WARNING.txt"), "w") as f:
-        f.write("YOUR DESKTOP IS BEING FOLDERIZED!\n\n")
-        f.write("This is the INFINITE FOLDER PRANK!\n")
-        f.write("Press CTRL+C in the terminal to stop it.\n")
+    # Clear previous run if exists
+    if os.path.exists(root_path):
+        shutil.rmtree(root_path)
     
-    # Create visible subfolders
+    # Create initial folder
+    os.makedirs(root_path)
+    
+    # Create nested folders
     current_path = root_path
-    while True:
-        try:
-            current_path = os.path.join(current_path, "ANOTHER_FOLDER")
-            os.makedirs(current_path)
-            print(f"Created: {current_path}")  # Live progress
-            time.sleep(DELAY_SECONDS)
-        except:
-            break
-
-def main():
-    print("\n🔹 INFINITE FOLDER PRANK ACTIVATED 🔹")
-    print(f"• Creating visible folders on Desktop: {FOLDER_NAME}")
-    print("• Press CTRL+C to stop early\n")
-    
-    # Start folder creation thread
-    Thread(target=create_folders, daemon=True).start()
-    
-    # Auto-stop timer
-    try:
-        time.sleep(RUN_TIME_MINUTES * 60)
-    except KeyboardInterrupt:
-        print("\n🛑 Stopped by user!")
-    finally:
-        print(f"\n✔️ Folders created at: Desktop/{FOLDER_NAME}")
-        print("   (Refresh your Desktop if not immediately visible)")
+    for i in range(1, TOTAL_FOLDERS + 1):
+        current_path = os.path.join(current_path, f"FOLDER_{i}")
+        os.makedirs(current_path)
+        
+        # Force folder refresh on Windows
+        if os.name == 'nt':
+            os.system(f'explorer /select,"{current_path}"')
+        
+        print(f"Created: {current_path}")  # Console log
+        time.sleep(DELAY_SECONDS)
 
 if __name__ == "__main__":
-    # Clear any existing folders first (for testing)
-    desktop = verify_desktop()
-    root_path = os.path.join(desktop, FOLDER_NAME)
-    if os.path.exists(root_path):
-        print("⚠️ Removing previous test folders...")
-        os.system(f'rmdir /s /q "{root_path}"')
+    print("\n=== VISIBLE FOLDER PRANK ===")
+    print(f"Creating {TOTAL_FOLDERS} folders on Desktop...\n")
+    print("Watch them appear in real-time!")
+    print("Press CTRL+C to stop early\n")
     
-    main()
+    try:
+        create_visible_folders()
+    except KeyboardInterrupt:
+        print("\nStopped by user!")
+    finally:
+        print(f"\nDone! Check your Desktop for '{FOLDER_NAME}'")
+        print("To delete: Right-click the folder and select 'Delete'")
 ```
 
 ## **Step 3: Run the Prank**
