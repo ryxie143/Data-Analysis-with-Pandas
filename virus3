@@ -1,6 +1,4 @@
-# **Step-by-Step: Fake Error Messages Prank (Python)**
-
-This harmless prank displays fake system error messages that look real but don't actually affect the computer. Perfect for tech-savvy pranksters!
+Fake Error Messages Prank 
 
 ## **Step 1: Install Required Library**
 ```cmd
@@ -112,32 +110,10 @@ if __name__ == "__main__":
             ctypes.windll.kernel32.CloseHandle(mutex)
 ```
 
-## **Step 3: Customize the Prank**
-1. **Edit `ERROR_MESSAGES`** list with your own funny messages
-2. Adjust `MESSAGE_COUNT` and `DELAY_SECONDS` as needed
-3. For more realism, add technical-looking error codes
+
 
 ## **Step 4: Run the Prank**
 ```cmd
 python fake_error.py
 ```
 
-## **Step 5: Extra Pranks (Optional)**
-1. **Make it persistent** (add a `while True` loop)
-2. **Add sound effects** with `winsound`:
-   ```python
-   import winsound
-   winsound.MessageBeep(winsound.MB_ICONHAND)  # Error sound
-   ```
-3. **Combine with other pranks** like flying folders
-
-## **How It Works**
-- Uses Windows API to create real-looking message boxes
-- System-modal windows force attention
-- Random selection keeps it unpredictable
-- Completely harmless (no actual system changes)
-
-## **Pro Tip**
-For maximum effect, set this as a startup script so it runs when they log in!
-
-**⚠️ Remember:** Only use with friends who will appreciate the joke, and never on work/school computers!
