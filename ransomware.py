@@ -1,3 +1,9 @@
+PS C:\Users\Administrator\Downloads\malware>  python ransomware.py -e test-folder -s 32
+  File "C:\Users\Administrator\Downloads\malware\ransomware.py", line 66
+    print ( "[!] Invalid token, most likely the
+            ^
+SyntaxError: unterminated string literal (detected at line 66)
+
 import pathlib, os, secrets, base64, getpass
 import cryptography
 from cryptography . fernet import Fernet
