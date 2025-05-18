@@ -9,63 +9,71 @@ Make sure you have Python installed from [python.org](https://www.python.org/)
 ```python
 import os
 import time
+import sys
 from threading import Thread
 
 # ===== CONFIG =====
-ROOT_NAME = "INFECTED_FOLDERS"  # Folder name on Desktop
-DELAY_SECONDS = 0.5             # Speed of creation (0.5s is good for visibility)
-STOP_AFTER_MINUTES = 1          # Auto-stop after X minutes (0=infinite)
-ADD_VIRUS_NOTE = True           # Add fake warning file
+FOLDER_NAME = "INFINITE_FOLDER_PRANK"  # Will appear on your Desktop
+DELAY_SECONDS = 0.5                    # Time between folders (0.5s = easy to see)
+RUN_TIME_MINUTES = 1                   # Auto-stop after 1 minute
 # ==================
 
-def create_infinite_folders():
-    """Creates visible nested folders on Desktop"""
+def verify_desktop():
+    """Double-checks we're targeting the real Desktop"""
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
-    root_path = os.path.join(desktop, ROOT_NAME)
-    current_path = root_path
-    
-    os.makedirs(root_path, exist_ok=True)
-    
-    # Add virus note
-    if ADD_VIRUS_NOTE:
-        warning_file = os.path.join(root_path, "!!!READ_ME!!!.txt")
-        with open(warning_file, "w") as f:
-            f.write("YOUR DESKTOP HAS BEEN INFECTED!\n\n")
-            f.write("This is the INFINITE FOLDER VIRUS!\n")
-            f.write("To remove it, you must:\n")
-            f.write("1. Scream 'I BELIEVE IN FOLDER GHOSTS!'\n")
-            f.write("2. Bring me candy\n\n")
-            f.write("Good luck! >:D\n")
+    if not os.path.exists(desktop):
+        desktop = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
+    return desktop
 
-    # Create infinite subfolders
+def create_folders():
+    """Creates clearly visible nested folders"""
+    desktop = verify_desktop()
+    root_path = os.path.join(desktop, FOLDER_NAME)
+    
+    # Create root folder with warning note
+    os.makedirs(root_path, exist_ok=True)
+    with open(os.path.join(root_path, "WARNING.txt"), "w") as f:
+        f.write("YOUR DESKTOP IS BEING FOLDERIZED!\n\n")
+        f.write("This is the INFINITE FOLDER PRANK!\n")
+        f.write("Press CTRL+C in the terminal to stop it.\n")
+    
+    # Create visible subfolders
+    current_path = root_path
     while True:
         try:
             current_path = os.path.join(current_path, "ANOTHER_FOLDER")
-            os.makedirs(current_path, exist_ok=True)
+            os.makedirs(current_path)
+            print(f"Created: {current_path}")  # Live progress
             time.sleep(DELAY_SECONDS)
         except:
             break
 
 def main():
-    print(f"🚀 Creating infinite folders on Desktop: {ROOT_NAME}")
-    print("👀 Watch them appear in real-time!")
-    print("🛑 Press CTRL+C to stop early\n")
+    print("\n🔹 INFINITE FOLDER PRANK ACTIVATED 🔹")
+    print(f"• Creating visible folders on Desktop: {FOLDER_NAME}")
+    print("• Press CTRL+C to stop early\n")
     
-    Thread(target=create_infinite_folders, daemon=True).start()
+    # Start folder creation thread
+    Thread(target=create_folders, daemon=True).start()
     
-    if STOP_AFTER_MINUTES > 0:
-        time.sleep(STOP_AFTER_MINUTES * 60)
-    else:
-        while True: time.sleep(1)
+    # Auto-stop timer
+    try:
+        time.sleep(RUN_TIME_MINUTES * 60)
+    except KeyboardInterrupt:
+        print("\n🛑 Stopped by user!")
+    finally:
+        print(f"\n✔️ Folders created at: Desktop/{FOLDER_NAME}")
+        print("   (Refresh your Desktop if not immediately visible)")
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\n🛑 Prank stopped manually!")
-    finally:
-        print(f"📁 Created folders at: Desktop/{ROOT_NAME}")
-        print("🧹 To delete: Right-click folder → Delete")
+    # Clear any existing folders first (for testing)
+    desktop = verify_desktop()
+    root_path = os.path.join(desktop, FOLDER_NAME)
+    if os.path.exists(root_path):
+        print("⚠️ Removing previous test folders...")
+        os.system(f'rmdir /s /q "{root_path}"')
+    
+    main()
 ```
 
 ## **Step 3: Run the Prank**
