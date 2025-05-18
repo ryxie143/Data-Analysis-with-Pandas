@@ -9,60 +9,74 @@ Make sure you have Python installed from [python.org](https://www.python.org/)
 ```python
 import os
 import time
-import shutil
+import ctypes
 from threading import Thread
 
 # ===== CONFIG =====
-FOLDER_NAME = "FOLDER_INVASION"    # Name of the main folder
-DELAY_SECONDS = 0.3                # Speed of appearance (0.3s is optimal)
-TOTAL_FOLDERS = 50                 # Total folders to create (stops automatically)
+FOLDER_NAME = "FLOOD_OF_FOLDERS"  # Main folder name on Desktop
+DELAY_SECONDS = 0.3               # Time between folder creations (0.3s is optimal)
+TOTAL_FOLDERS = 30                # Total folders to create (0 = infinite)
 # ==================
 
+def refresh_desktop():
+    """Forces Windows to refresh the Desktop view"""
+    ctypes.windll.user32.SystemParametersInfoW(0x0014, 0, None, 0)
+
 def get_desktop_path():
-    """Get the correct Desktop path (works with OneDrive too)"""
+    """Gets the correct Desktop path (works with OneDrive)"""
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     if not os.path.exists(desktop):
         desktop = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
     return desktop
 
-def create_visible_folders():
-    """Creates folders that visibly appear on Desktop"""
+def create_folders():
+    """Creates visible nested folders without opening Explorer"""
     desktop = get_desktop_path()
     root_path = os.path.join(desktop, FOLDER_NAME)
     
     # Clear previous run if exists
     if os.path.exists(root_path):
-        shutil.rmtree(root_path)
+        os.system(f'rmdir /s /q "{root_path}"')
     
-    # Create initial folder
+    # Create root folder
     os.makedirs(root_path)
+    refresh_desktop()
     
     # Create nested folders
     current_path = root_path
-    for i in range(1, TOTAL_FOLDERS + 1):
-        current_path = os.path.join(current_path, f"FOLDER_{i}")
-        os.makedirs(current_path)
-        
-        # Force folder refresh on Windows
-        if os.name == 'nt':
-            os.system(f'explorer /select,"{current_path}"')
-        
-        print(f"Created: {current_path}")  # Console log
-        time.sleep(DELAY_SECONDS)
+    folder_count = 0
+    
+    while True:
+        try:
+            folder_count += 1
+            current_path = os.path.join(current_path, f"FOLDER_{folder_count}")
+            os.makedirs(current_path)
+            
+            # Force desktop refresh (no Explorer window)
+            refresh_desktop()
+            print(f"Created: {current_path}")
+            
+            if TOTAL_FOLDERS > 0 and folder_count >= TOTAL_FOLDERS:
+                break
+                
+            time.sleep(DELAY_SECONDS)
+        except:
+            break
 
 if __name__ == "__main__":
-    print("\n=== VISIBLE FOLDER PRANK ===")
-    print(f"Creating {TOTAL_FOLDERS} folders on Desktop...\n")
-    print("Watch them appear in real-time!")
-    print("Press CTRL+C to stop early\n")
+    print("\n=== FOLDER FLOOD PRANK ===")
+    print(f"• Creating folders on Desktop: {FOLDER_NAME}")
+    print(f"• Delay between folders: {DELAY_SECONDS}s")
+    print(f"• Total folders: {TOTAL_FOLDERS if TOTAL_FOLDERS > 0 else 'Infinite'}")
+    print("• Press CTRL+C to stop early\n")
     
     try:
-        create_visible_folders()
+        create_folders()
     except KeyboardInterrupt:
         print("\nStopped by user!")
     finally:
-        print(f"\nDone! Check your Desktop for '{FOLDER_NAME}'")
-        print("To delete: Right-click the folder and select 'Delete'")
+        print("\nDone! Folders should be visibly appearing on your Desktop.")
+        print(f"Location: {get_desktop_path()}\\{FOLDER_NAME}")
 ```
 
 ## **Step 3: Run the Prank**
