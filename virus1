@@ -1,32 +1,33 @@
-Install PyInstaller:
+# Ghost Prank
 
-cmd
-pip install pyinstaller
-Create the executable (no console window):
-
-cmd
-pyinstaller --onefile --windowed --icon=ghost.ico ghost_folder_prank.py
---onefile: Creates single .exe
-
---windowed: No console window
-
---icon: Optional ghost icon (create or download one)
-
-Find your executable in the dist folder
-
-**⚠️ WARNING:** Only use with **friends who will find it funny** and **never on real systems without permission!**  
+# Step 1: Make a new folder and name it virus1
 
 ---
 
-## **Step 1: Install Required Libraries**
+# Step 2: Setup your Virtual Environment
+```bash
+python -m venv
+```
+To activate:
+```bash
+venv\Scripts\activate
+```
+Then move to your folder directory
+```bash
+cd virus1
+```
+
+---
+
+# Step 3: Install Required Libraries
 ```bash
 pip install pyautogui psutil pywin32
 ```
-*(We add `pywin32` for fake error pop-ups.)*
+**We add `pywin32` for fake error pop-ups**
 
 ---
 
-## **Step 2: Python Script (`ghost_folder_prank.py`)**
+## Step 4: Python Script **ghost_prank.py**
 ```python
 import os
 import random
@@ -115,44 +116,14 @@ if __name__ == "__main__":
 
 ---
 
-## **Step 3: Running the Prank**
-1. Save as `ghost_folder_prank.py`.  
-2. Run it:
+## Step 5: Running the Prank 
+Run it:
    ```bash
-   python ghost_folder_prank.py
+   python ghost_prank.py
    ```
-3. **Watch the chaos unfold!**  
-   - A folder named **"GHOST_FOLDER"** will fly around.  
-   - A **fake virus warning** will pop up (if enabled).  
+--- 
 
----
+## How to Stop It
+- Press **CTRL + C** in the terminal.  
 
-## **How to Stop It**
-- Press **`CTRL + C`** in the terminal.  
-- Manually delete the folder afterward:  
-  ```bash
-  rmdir /s /q "%USERPROFILE%\Desktop\GHOST_FOLDER"
-  ```
 
----
-
-## **Extra Pranks (Optional)**
-1. **Add spooky sounds** (requires `playsound`):  
-   ```python
-   from playsound import playsound
-   playsound("ghost_noise.mp3")  # Add this inside move_folder()
-   ```
-2. **Make it open a Rickroll** after stopping:  
-   ```python
-   import webbrowser
-   webbrowser.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-   ```
-
----
-
-### **⚠️ Ethical Reminder**  
-- This is **only for fun** among friends.  
-- **Never use maliciously** – it could be considered harassment.  
-- Best tested in a **Virtual Machine** first.  
-
-Want even more prank ideas? Let me know! 👻
