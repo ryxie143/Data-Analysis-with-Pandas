@@ -55,18 +55,22 @@ def encrypt(filename, key):
 def decrypt(filename, key):
     """Given a filename (str) and key (bytes), it decrypts the file and write it"""
     f = Fernet(key)
-    with open(filename, "rb") as file:
-        # read the encrypted data
-        encrypted_data = file.read()
-        # decrypt data
-        try:
-            decrypted_data = f.decrypt(encrypted_data)
-        except cryptography.fernet.InvalidToken:
-            print("[!] Invalid token, most likely the password is incorrect")
-            return
-    # write the original file
-    with open(filename, "wb") as file:
-        file.write(decrypted_data)
+    try:
+        with open(filename, "rb") as file:
+            encrypted_data = file.read()
+        
+        decrypted_data = f.decrypt(encrypted_data)
+        
+        with open(filename, "wb") as file:
+            file.write(decrypted_data)
+        return True
+    
+    except cryptography.fernet.InvalidToken:
+        print(f"[!] Failed to decrypt {filename} - incorrect password or corrupted file")
+        return False
+    except Exception as e:
+        print(f"[!] Error decrypting {filename}: {str(e)}")
+        return False
 
 def encrypt_folder(foldername, key):
     """Encrypt all files in a folder recursively"""
@@ -79,12 +83,22 @@ def encrypt_folder(foldername, key):
 
 def decrypt_folder(foldername, key):
     """Decrypt all files in a folder recursively"""
+    success_count = 0
+    failure_count = 0
+    
     for child in pathlib.Path(foldername).glob("*"):
         if child.is_file():
             print(f"[*] Decrypting {child}")
-            decrypt(child, key)
+            if decrypt(child, key):
+                success_count += 1
+            else:
+                failure_count += 1
         elif child.is_dir():
-            decrypt_folder(child, key)
+            sub_success, sub_failure = decrypt_folder(child, key)
+            success_count += sub_success
+            failure_count += sub_failure
+    
+    return success_count, failure_count
 
 if __name__ == "__main__":
     import argparse
