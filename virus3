@@ -14,65 +14,102 @@ import time
 import win32gui
 import win32con
 import winsound
+import ctypes
+import sys
 from threading import Thread
 
 # ===== CONFIG =====
-MIN_DELAY = 5               # Minimum seconds between errors
-MAX_DELAY = 30              # Maximum seconds between errors
-ERROR_SOUND = True          # Play warning sound with errors
-RUN_IN_BACKGROUND = True    # Hide console window when running
+MAX_SPEED = True          # Set to False for less aggressive spamming
+ERROR_SOUND = True       # Play warning sounds
+HIDE_CONSOLE = True      # Run completely in background
 # ==================
 
 ERROR_MESSAGES = [
-    "CRITICAL ERROR: Keyboard not detected. Press any key to continue.",
-    "WARNING: Virus detected in system32!",
-    "ALERT: Your computer has been hacked by aliens!",
-    "ERROR 404: Intelligence module not found.",
-    "SYSTEM FAILURE: Too many cat videos detected.",
-    "WARNING: Your warranty expired yesterday.",
-    "ALERT: Missing DLL file - C:\\Windows\\System32\\common_sense.dll",
-    "CRITICAL: Your computer just failed the Turing test.",
-    "MEMORY LEAK: All your RAM is leaking out the USB ports!",
-    "ERROR: Monitor resolution too high for human comprehension",
+    "CRITICAL SYSTEM FAILURE: Keyboard not found. Press F1 to continue.",
+    "VIRUS ALERT: Trojan.Horse detected in system32!",
+    "BSOD IMMINENT: 0x0000007B CRITICAL_PROCESS_DIED",
+    "ERROR: All your RAM has been converted to Bitcoin",
+    "WARNING: Your CPU is overheating (98°C detected)",
+    "ALERT: Hackers from North Korea detected!",
+    "SYSTEM32 DELETION IN PROGRESS: 37% complete",
+    "CRITICAL: Your warranty expired 5 minutes ago",
+    "ERROR: Windows.Update.Service has mutated",
+    "WARNING: Your GPU is mining cryptocurrency",
+    "ALERT: BIOS corruption detected (Sector 0xBADF00D)",
+    "FATAL ERROR: Too many Chrome tabs open",
 ]
 
-def show_fake_error():
-    """Displays a fake error message with sound"""
-    title = random.choice(["ERROR", "WARNING", "CRITICAL ALERT", "SYSTEM MESSAGE"])
-    icon = random.choice([win32con.MB_ICONERROR, win32con.MB_ICONWARNING])
+def beep_error():
+    """Plays different error sounds randomly"""
+    sounds = [
+        winsound.MB_ICONHAND,    # Critical stop
+        winsound.MB_ICONQUESTION, # Question
+        winsound.MB_ICONEXCLAMATION # Exclamation
+    ]
+    winsound.MessageBeep(random.choice(sounds))
+
+def show_error():
+    """Shows a fake error message"""
+    title = random.choice([
+        "Microsoft Windows",
+        "System Alert",
+        "CRITICAL ERROR",
+        "Virus Protection",
+        "IT Department"
+    ])
+    
+    style = random.choice([
+        win32con.MB_ICONERROR | win32con.MB_SYSTEMMODAL,
+        win32con.MB_ICONWARNING | win32con.MB_SYSTEMMODAL,
+        win32con.MB_ICONINFORMATION | win32con.MB_SYSTEMMODAL
+    ])
     
     if ERROR_SOUND:
-        Thread(target=winsound.MessageBeep, args=(winsound.MB_ICONHAND,)).start()
+        Thread(target=beep_error).start()
     
     win32gui.MessageBox(
         0,
         random.choice(ERROR_MESSAGES),
         title,
-        win32con.MB_OK | icon | win32con.MB_SYSTEMMODAL
+        style
     )
 
 def hide_console():
-    """Hides the console window"""
-    import ctypes
-    ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
+    """Completely hides the console window"""
+    ctypes.windll.user32.ShowWindow(
+        ctypes.windll.kernel32.GetConsoleWindow(),
+        0
+    )
 
 def main():
-    if RUN_IN_BACKGROUND:
+    if HIDE_CONSOLE:
         hide_console()
     
-    print("Fake error prank running in background...")
-    print("To stop: Open Task Manager and end pythonw.exe")
+    # Calculate delay based on intensity
+    delay = 0.1 if MAX_SPEED else random.uniform(0.5, 1.5)
     
+    # Main spamming loop
     while True:
         try:
-            show_fake_error()
-            wait_time = random.randint(MIN_DELAY, MAX_DELAY)
-            time.sleep(wait_time)
+            # Spawn multiple error threads for maximum chaos
+            for _ in range(random.randint(1, 3 if MAX_SPEED else 1)):
+                Thread(target=show_error).start()
+            
+            time.sleep(delay)
         except:
-            break
+            pass
 
 if __name__ == "__main__":
-    main()
+    # Make sure only one instance runs
+    try:
+        mutex = ctypes.windll.kernel32.CreateMutexW(None, False, "FakeErrorMutex")
+        if ctypes.windll.kernel32.GetLastError() == 183:
+            sys.exit()
+        
+        main()
+    finally:
+        if 'mutex' in locals():
+            ctypes.windll.kernel32.CloseHandle(mutex)
 ```
 
 ## **Step 3: Customize the Prank**
