@@ -141,7 +141,7 @@ if __name__ == '__main__':
 
 2. **Decrypt test files** (after studying the encryption):
    ```bash
-   python ransomware_edu_demo.py decrypt ~/ransomware_test/target_files "my_password123" "paste_salt_hex_from_readme"
+   python ransomware_edu_demo.py decrypt ~/Downloads/test-files "my_password123" "a1b2c3d4e5f6..."
    ```
 
 ## Safety Precautions
