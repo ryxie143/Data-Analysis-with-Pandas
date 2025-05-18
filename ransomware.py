@@ -44,16 +44,15 @@ def encrypt(filename, key):
 def decrypt(filename, key):
     """Decrypt a file using Fernet symmetric encryption"""
     f = Fernet(key)
-    with open(filename, "rb") as file:
-        encrypted_data = file.read()
+    print(f"[*] Decrypting {filename}")
     try:
+        with open(filename, "rb") as file:
+            encrypted_data = file.read()
         decrypted_data = f.decrypt(encrypted_data)
         with open(filename, "wb") as file:
             file.write(decrypted_data)
-        return True
     except cryptography.fernet.InvalidToken:
-        print(f"[!] Failed to decrypt {filename} - incorrect password")
-        return False
+        print("[!] Invalid token, most likely the password is incorrect")
 
 def encrypt_folder(foldername, key):
     """Recursively encrypt all files in a folder"""
@@ -66,20 +65,11 @@ def encrypt_folder(foldername, key):
 
 def decrypt_folder(foldername, key):
     """Recursively decrypt all files in a folder"""
-    success = 0
-    failures = 0
     for child in pathlib.Path(foldername).glob("*"):
         if child.is_file():
-            print(f"[*] Decrypting {child}")
-            if decrypt(child, key):
-                success += 1
-            else:
-                failures += 1
+            decrypt(child, key)
         elif child.is_dir():
-            sub_success, sub_failures = decrypt_folder(child, key)
-            success += sub_success
-            failures += sub_failures
-    return success, failures
+            decrypt_folder(child, key)
 
 if __name__ == "__main__":
     import argparse
@@ -99,33 +89,20 @@ if __name__ == "__main__":
     
     if args.encrypt:
         password = getpass.getpass("Enter encryption password: ")
-        confirm = getpass.getpass("Confirm password: ")
-        if password != confirm:
-            print("[!] Passwords don't match!")
-            exit(1)
-    else:
-        password = getpass.getpass("Enter decryption password: ")
-    
-    key = generate_key(
-        password,
-        salt_size=args.salt_size if args.salt_size else 16,
-        load_existing_salt=args.decrypt,
-        save_salt=args.encrypt
-    )
-    
-    if args.encrypt:
+        if args.salt_size:
+            key = generate_key(password, salt_size=args.salt_size, save_salt=True)
+        else:
+            key = generate_key(password, save_salt=True)
+        
         if os.path.isfile(args.path):
             encrypt(args.path, key)
-            print("[+] File encrypted successfully")
         elif os.path.isdir(args.path):
             encrypt_folder(args.path, key)
-            print("[+] Folder encrypted successfully")
     else:
+        password = getpass.getpass("Enter decryption password: ")
+        key = generate_key(password, load_existing_salt=True)
+        
         if os.path.isfile(args.path):
-            if decrypt(args.path, key):
-                print("[+] File decrypted successfully")
-            else:
-                print("[!] Decryption failed")
+            decrypt(args.path, key)
         elif os.path.isdir(args.path):
-            success, failures = decrypt_folder(args.path, key)
-            print(f"[+] Decryption complete: {success} successful, {failures} failed")
+            decrypt_folder(args.path, key)
