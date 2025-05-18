@@ -97,12 +97,3 @@ if __name__ == "__main__":
    rmdir /s /q "C:\INFECTED_FOLDERS"
    ```
 
-## **Pro Prank Tips**
-1. Set `STOP_AFTER_MINUTES = 0` for infinite chaos
-2. Change `ROOT_FOLDER` to their desktop for immediate visibility:
-   ```python
-   ROOT_FOLDER = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'VIRUS_FOLDERS')
-   ```
-3. Combine with the flying folder prank for maximum effect!
-
-**⚠️ Remember:** Only use on friends who will laugh, and always clean up afterwards!
