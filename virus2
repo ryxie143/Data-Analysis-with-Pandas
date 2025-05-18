@@ -1,3 +1,25 @@
+(venv) PS C:\Users\Administrator\Downloads\malware\infinite_folders> python infinitefolders_prank.py
+🚀 Launching Infinite Folder Prank at: C:\INFECTED_FOLDERS
+⚠️ Warning: This will create thousands of folders!
+Press CTRL+C to stop early.
+
+⏱ Will stop after 1 minutes...
+Exception in thread Thread-1 (create_infinite_folders):
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\threading.py", line 1041, in _bootstrap_inner
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\threading.py", line 992, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Downloads\malware\infinite_folders\infinitefolders_prank.py", line 22, in create_infinite_folders
+    f.write("⚠️ YOUR FILES HAVE BEEN FOLDERIZED! ⚠️\n\n")
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-1: character maps to <undefined>
+
 # **Enhanced "Infinite Folder" Prank with Virus Note & Hidden Folders**
 
 Here's the complete step-by-step Python prank with all your requested features:
