@@ -8,72 +8,76 @@ Make sure you have Python installed from [python.org](https://www.python.org/)
 ## **Step 2: Create the Script (`infinite_folders_prank.py`)**
 ```python
 import os
+import random
 import time
-import sys
+import pyautogui
+import shutil
 from threading import Thread
 
 # ===== CONFIG =====
-FOLDER_NAME = "INFINITE_FOLDER_PRANK"  # Will appear on your Desktop
-DELAY_SECONDS = 0.5                    # Time between folders (0.5s = easy to see)
-RUN_TIME_MINUTES = 1                   # Auto-stop after 1 minute
+FOLDER_NAME = "GHOST_FOLDER"      # Name of the annoying folder
+POPUP_DURATION = 30               # How long to run (seconds)
+MOVE_INTERVAL = 2                 # Time between moves (seconds)
+FLICKER_EFFECT = True             # Makes folder blink randomly
 # ==================
 
-def verify_desktop():
-    """Double-checks we're targeting the real Desktop"""
+def create_flying_folder():
+    """Creates a folder that jumps around the screen"""
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
-    if not os.path.exists(desktop):
-        desktop = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
-    return desktop
+    folder_path = os.path.join(desktop, FOLDER_NAME)
+    
+    # Create folder with confusing contents
+    os.makedirs(folder_path, exist_ok=True)
+    for i in range(3):
+        with open(os.path.join(folder_path, f"ERROR_{i}.txt"), "w") as f:
+            f.write(f"SYSTEM ERROR {random.randint(1000,9999)}\n")
+            f.write("This folder cannot be deleted!\n")
 
-def create_folders():
-    """Creates clearly visible nested folders"""
-    desktop = verify_desktop()
-    root_path = os.path.join(desktop, FOLDER_NAME)
+    # Make folder jump around
+    screen_width, screen_height = pyautogui.size()
+    start_time = time.time()
     
-    # Create root folder with warning note
-    os.makedirs(root_path, exist_ok=True)
-    with open(os.path.join(root_path, "WARNING.txt"), "w") as f:
-        f.write("YOUR DESKTOP IS BEING FOLDERIZED!\n\n")
-        f.write("This is the INFINITE FOLDER PRANK!\n")
-        f.write("Press CTRL+C in the terminal to stop it.\n")
-    
-    # Create visible subfolders
-    current_path = root_path
-    while True:
+    while time.time() - start_time < POPUP_DURATION:
         try:
-            current_path = os.path.join(current_path, "ANOTHER_FOLDER")
-            os.makedirs(current_path)
-            print(f"Created: {current_path}")  # Live progress
-            time.sleep(DELAY_SECONDS)
-        except:
+            # Random position
+            x = random.randint(100, screen_width - 100)
+            y = random.randint(100, screen_height - 100)
+            
+            # Windows trick to move folder
+            os.system(f'powershell "$sh = New-Object -ComObject Shell.Application; $sh.Namespace(0).ParseName(\'{folder_path}\').InvokeVerb(\'move\')"')
+            pyautogui.moveTo(x, y, duration=0.3)
+            pyautogui.click()  # "Drops" the folder
+            
+            # Flicker effect
+            if FLICKER_EFFECT and random.random() > 0.7:
+                os.system(f'attrib +h "{folder_path}"')
+                time.sleep(0.3)
+                os.system(f'attrib -h "{folder_path}"')
+            
+            time.sleep(MOVE_INTERVAL)
+            
+        except Exception as e:
+            print(f"Error: {e}")
             break
 
-def main():
-    print("\n🔹 INFINITE FOLDER PRANK ACTIVATED 🔹")
-    print(f"• Creating visible folders on Desktop: {FOLDER_NAME}")
-    print("• Press CTRL+C to stop early\n")
-    
-    # Start folder creation thread
-    Thread(target=create_folders, daemon=True).start()
-    
-    # Auto-stop timer
-    try:
-        time.sleep(RUN_TIME_MINUTES * 60)
-    except KeyboardInterrupt:
-        print("\n🛑 Stopped by user!")
-    finally:
-        print(f"\n✔️ Folders created at: Desktop/{FOLDER_NAME}")
-        print("   (Refresh your Desktop if not immediately visible)")
+    # Cleanup option
+    if random.choice([True, False]):
+        shutil.rmtree(folder_path)
 
 if __name__ == "__main__":
-    # Clear any existing folders first (for testing)
-    desktop = verify_desktop()
-    root_path = os.path.join(desktop, FOLDER_NAME)
-    if os.path.exists(root_path):
-        print("⚠️ Removing previous test folders...")
-        os.system(f'rmdir /s /q "{root_path}"')
+    print("\n👻 GHOST FOLDER PRANK ACTIVATED 👻")
+    print(f"• Watch '{FOLDER_NAME}' fly around the screen!")
+    print(f"• Will run for {POPUP_DURATION} seconds")
+    print("• Press CTRL+C to stop early\n")
     
-    main()
+    Thread(target=create_flying_folder).start()
+    
+    try:
+        time.sleep(POPUP_DURATION)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        print("\nPrank completed! Folder may self-destruct.")
 ```
 
 ## **Step 3: Run the Prank**
