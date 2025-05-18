@@ -11,68 +11,80 @@ import os
 import time
 import ctypes
 import random
-from threading import Thread
 
 # ===== CONFIG =====
-PRANK_FOLDER = "FOLDER_APOCALYPSE"  # Main folder name
-FOLDER_COUNT = 30                   # Number of folders to create
-DELAY = 0.3                         # Seconds between appearances (0.3-0.5 works best)
+MAIN_FOLDER = "FOLDER_ATTACK"    # Name of main folder on Desktop
+NUM_FOLDERS = 30                 # Number of folders to create
+DELAY = 0.5                      # Seconds between appearances (0.3-1.0 works best)
 # ==================
 
-def force_desktop_refresh():
-    """Makes Windows actually show the new folders"""
-    ctypes.windll.user32.SystemParametersInfoW(20, 0, None, 3)
+def force_visible_refresh():
+    """Forces Windows to actually show the new folders"""
+    try:
+        ctypes.windll.user32.SystemParametersInfoW(20, 0, None, 0)
+        # Double refresh for reliability
+        ctypes.windll.shell32.SHChangeNotify(0x8000000, 0x1000, None, None)
+    except:
+        pass
 
-def get_desktop():
-    """Finds your real Desktop path (works with OneDrive)"""
-    desktop = os.path.join(os.path.expanduser("~"), "Desktop")
-    if not os.path.exists(desktop):
-        desktop = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
+def get_actual_desktop():
+    """Gets the real visible Desktop path"""
+    try:
+        from win32com.shell import shell, shellcon
+        desktop = shell.SHGetFolderPath(0, shellcon.CSIDL_DESKTOP, 0, 0)
+    except:
+        desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     return desktop
 
 def create_visible_folders():
-    """Makes folders actually appear on screen"""
-    desktop = get_desktop()
-    main_path = os.path.join(desktop, PRANK_FOLDER)
+    """Creates folders that WILL appear on screen"""
+    desktop = get_actual_desktop()
+    target = os.path.join(desktop, MAIN_FOLDER)
     
-    # Clear previous run
-    if os.path.exists(main_path):
-        os.system(f'rmdir /s /q "{main_path}"')
-        time.sleep(0.5)
+    # Clean previous run
+    if os.path.exists(target):
+        try:
+            os.system(f'rmdir /s /q "{target}"')
+            time.sleep(1)
+        except:
+            pass
     
-    # Create main folder
-    os.makedirs(main_path)
-    force_desktop_refresh()
+    # Create main folder with forced refresh
+    os.makedirs(target)
+    print(f"\nStarting folder creation in: {target}")
+    force_visible_refresh()
+    time.sleep(1)  # Let Windows catch up
     
     # Create visible subfolders
-    for i in range(1, FOLDER_COUNT + 1):
-        folder_name = f"FOLDER_{i:03d}"
-        folder_path = os.path.join(main_path, folder_name)
+    for i in range(1, NUM_FOLDERS + 1):
+        name = f"FOLDER_{i:03d}"
+        path = os.path.join(target, name)
         
-        os.makedirs(folder_path)
-        print(f"Created: {folder_path}")  # Terminal feedback
+        os.makedirs(path)
+        print(f"Created: {name}")
         
-        # Random position variation (optional)
-        if random.random() < 0.3:  # 30% chance to refresh
-            force_desktop_refresh()
+        # Random extra refreshes for visibility
+        if random.random() < 0.4:
+            force_visible_refresh()
         
         time.sleep(DELAY)
     
-    # Final refresh to show all
-    force_desktop_refresh()
+    # Final forced refresh
+    force_visible_refresh()
+    print("\nCOMPLETE! Check your Desktop screen")
 
 if __name__ == "__main__":
-    print(f"\n🌀 Preparing to create {FOLDER_COUNT} visible folders...")
-    print("Look at your Desktop screen (not this terminal)!")
-    print("Press CTRL+C to stop early\n")
+    print(f"=== FOLDER VISIBILITY DEMO ===")
+    print(f"Creating {NUM_FOLDERS} folders that WILL appear on your Desktop")
+    print("WATCH YOUR SCREEN (not this terminal)!")
+    input("Press Enter to begin...")
     
     try:
         create_visible_folders()
-    except KeyboardInterrupt:
-        print("\n🌀 Prank stopped by user!")
+    except Exception as e:
+        print(f"Error: {str(e)}")
     finally:
-        print(f"\n✅ Done! Check your Desktop for '{PRANK_FOLDER}'")
-        print("To remove: Right-click the folder and select 'Delete'")
+        input("\nPress Enter to exit...")
 ```
 
 ## **Step 3: Run the Prank**
