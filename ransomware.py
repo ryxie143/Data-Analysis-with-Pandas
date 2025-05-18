@@ -132,10 +132,12 @@ if __name__ == "__main__":
             encrypt(args.path, key)
         elif os.path.isdir(args.path):
             encrypt_folder(args.path, key)
-    elif decrypt_:
-        if os.path.isfile(args.path):
-            decrypt(args.path, key)
-        elif os.path.isdir(args.path):
-            decrypt_folder(args.path, key)
+  elif decrypt_:
+    if os.path.isfile(args.path):
+        if not decrypt(args.path, key):
+            print("[!] Decryption failed for the file")
+    elif os.path.isdir(args.path):
+        success, failure = decrypt_folder(args.path, key)
+        print(f"[*] Decryption complete: {success} files decrypted, {failure} files failed")
     else:
         raise TypeError("Please specify whether you want to encrypt the file or decrypt it.")
