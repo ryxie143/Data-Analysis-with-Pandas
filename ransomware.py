@@ -1,3 +1,7 @@
+PS C:\Users\Administrator\Downloads\malware> python ransomware_edu_demo.py encrypt ~/ransomware_test/target_files
+usage: ransomware_edu_demo.py [-h] {encrypt,decrypt} path password [salt_hex]
+ransomware_edu_demo.py: error: the following arguments are required: password
+
 # How to Run the Educational Ransomware Demo (For Learning Only)
 
 **Important Reminder:** This is strictly for educational purposes in a controlled environment. Never use this against real systems or without explicit permission.
