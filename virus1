@@ -22,24 +22,17 @@ import pyautogui
 import psutil
 import win32gui
 import win32con
-import sys
 from threading import Thread
 
 # ===== CONFIG =====
 FOLDER_NAME = "GHOST_FOLDER"    # Spooky folder name
-DELAY_SECONDS = 2               # Movement speed (seconds)
-DURATION_MINUTES = 5            # 0 = run forever
-SHOW_FAKE_ERROR = True          # Show warning message?
-HIDE_CONSOLE = True             # Hide the console window
+DELAY_SECONDS = 2               # How often it moves (seconds)
+DURATION_MINUTES = 2            # How long it runs (0 = forever)
+SHOW_FAKE_ERROR = True          # Pop-up fake virus warning?
 # ==================
 
-def hide_console():
-    """Hides the console window completely"""
-    if HIDE_CONSOLE:
-        import ctypes
-        ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
-
 def show_fake_error():
+    """Shows a fake virus warning message."""
     win32gui.MessageBox(
         0,
         "WARNING: GHOSTWARE DETECTED!\n\nYour system is haunted by a rogue folder spirit. Do not interfere!",
@@ -48,51 +41,63 @@ def show_fake_error():
     )
 
 def create_folder():
+    """Creates the prank folder on the desktop."""
     desktop = os.path.join(os.path.expanduser("~"), "Desktop")
     folder_path = os.path.join(desktop, FOLDER_NAME)
     os.makedirs(folder_path, exist_ok=True)
     return folder_path
 
 def move_folder(folder_path):
+    """Moves the folder to random positions on screen."""
     screen_width, screen_height = pyautogui.size()
+    
     while True:
         try:
+            # Generate random position
             x = random.randint(0, screen_width - 100)
             y = random.randint(0, screen_height - 100)
-            os.system(f'powershell "$sh = New-Object -ComObject Shell.Application; $sh.Namespace(0).ParseName(\'{folder_path}\').InvokeVerb(\'move\')"')
+            
+            # Windows Explorer trick to move folder
+            os.system(f'powershell.exe -command "$sh = New-Object -ComObject Shell.Application; $sh.Namespace(0).ParseName(\'{folder_path}\').InvokeVerb(\'move\')"')
             pyautogui.moveTo(x, y, duration=0.5)
-            pyautogui.click()
+            pyautogui.click()  # "Drops" the folder
+            
             time.sleep(DELAY_SECONDS)
         except:
             break
 
 def is_explorer_running():
+    """Checks if Windows Explorer is running."""
     return "explorer.exe" in (p.name() for p in psutil.process_iter())
 
 def main():
-    hide_console()
-    
     if not is_explorer_running():
-        win32gui.MessageBox(0, "Error: Windows Explorer must be running!", "Error", win32con.MB_ICONERROR)
-        sys.exit()
+        print("Error: Windows Explorer must be running!")
+        return
 
     folder_path = create_folder()
-    
+    print(f"Ghost folder created at: {folder_path}")
+    print("Press CTRL+C to stop early.")
+
     if SHOW_FAKE_ERROR:
         Thread(target=show_fake_error, daemon=True).start()
 
+    # Run folder movement in background
     Thread(target=move_folder, args=(folder_path,), daemon=True).start()
     
-    try:
-        if DURATION_MINUTES > 0:
-            time.sleep(DURATION_MINUTES * 60)
-        else:
-            while True: time.sleep(1)
-    except:
-        pass
+    if DURATION_MINUTES > 0:
+        time.sleep(DURATION_MINUTES * 60)
+    else:
+        while True:
+            time.sleep(1)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nPrank stopped by user.")
+    finally:
+        print("The ghost has been banished! Folder remains but won't move anymore.")
 ```
 
 ---
