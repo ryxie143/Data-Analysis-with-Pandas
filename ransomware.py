@@ -64,7 +64,7 @@ def decrypt(filename, key):
         except cryptography.fernet.InvalidToken:
             print("[!] Invalid token, most likely the password is incorrect")
             return
-        # write the original file
+    # write the original file
     with open(filename, "wb") as file:
         file.write(decrypted_data)
 
