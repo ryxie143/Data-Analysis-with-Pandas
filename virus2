@@ -1,0 +1,108 @@
+# **Enhanced "Infinite Folder" Prank with Virus Note & Hidden Folders**
+
+Here's the complete step-by-step Python prank with all your requested features:
+
+## **Step 1: Install Python**
+Make sure you have Python installed from [python.org](https://www.python.org/)
+
+## **Step 2: Create the Script (`infinite_folders_prank.py`)**
+```python
+import os
+import time
+from threading import Thread
+
+# ===== CONFIG =====
+ROOT_FOLDER = "C:\\INFECTED_FOLDERS"  # Where the prank starts
+DELAY_SECONDS = 0.1                    # Speed of folder creation
+STOP_AFTER_MINUTES = 2                  # Auto-stop after X minutes (0=infinite)
+HIDE_FOLDERS = True                     # Make folders hidden
+ADD_VIRUS_NOTE = True                   # Add fake virus warning
+# ==================
+
+def create_infinite_folders():
+    """Creates never-ending nested folders"""
+    current_path = ROOT_FOLDER
+    os.makedirs(current_path, exist_ok=True)
+    
+    # Add virus note if enabled
+    if ADD_VIRUS_NOTE:
+        virus_note = os.path.join(current_path, "!!!WARNING!!!.txt")
+        with open(virus_note, "w") as f:
+            f.write("⚠️ YOUR FILES HAVE BEEN FOLDERIZED! ⚠️\n\n")
+            f.write("This is the work of the INFINITE FOLDER VIRUS!\n")
+            f.write("To remove this virus, you must:\n")
+            f.write("1. Bring me 10 pieces of candy\n")
+            f.write("2. Say 'I believe in folder ghosts'\n")
+            f.write("3. Restart your computer 3 times\n\n")
+            f.write("Good luck! 😈")
+    
+    # Hide the root folder if enabled
+    if HIDE_FOLDERS:
+        os.system(f'attrib +h "{ROOT_FOLDER}"')
+    
+    # Start creating infinite folders
+    while True:
+        try:
+            current_path = os.path.join(current_path, "ANOTHER_FOLDER")
+            os.makedirs(current_path, exist_ok=True)
+            time.sleep(DELAY_SECONDS)
+        except:
+            break
+
+def main():
+    print(f"🚀 Launching Infinite Folder Prank at: {ROOT_FOLDER}")
+    print("⚠️ Warning: This will create thousands of folders!")
+    print("Press CTRL+C to stop early.\n")
+    
+    # Run in background thread
+    Thread(target=create_infinite_folders, daemon=True).start()
+    
+    # Auto-stop timer
+    if STOP_AFTER_MINUTES > 0:
+        print(f"⏱ Will stop after {STOP_AFTER_MINUTES} minutes...")
+        time.sleep(STOP_AFTER_MINUTES * 60)
+    else:
+        print("♾ Running FOREVER until stopped...")
+        while True:
+            time.sleep(1)
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n🛑 Prank stopped by user!")
+    finally:
+        print(f"📁 Created folders up to: {ROOT_FOLDER}\\ANOTHER_FOLDER\\...")
+        print("💡 To delete: rmdir /s /q", f'"{ROOT_FOLDER}"')
+```
+
+## **Step 3: Run the Prank**
+1. Open Command Prompt as Administrator
+2. Navigate to your script location
+3. Run:
+   ```cmd
+   python infinite_folders_prank.py
+   ```
+
+## **What Happens**
+1. Creates hidden folder `C:\INFECTED_FOLDERS` (if you have admin rights)
+2. Adds a scary "virus" warning note
+3. Generates endless subfolders named `ANOTHER_FOLDER`
+4. Stops after 2 minutes (configurable)
+
+## **How to Remove**
+1. Open Command Prompt as Admin
+2. Run:
+   ```cmd
+   rmdir /s /q "C:\INFECTED_FOLDERS"
+   ```
+
+## **Pro Prank Tips**
+1. Set `STOP_AFTER_MINUTES = 0` for infinite chaos
+2. Change `ROOT_FOLDER` to their desktop for immediate visibility:
+   ```python
+   ROOT_FOLDER = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'VIRUS_FOLDERS')
+   ```
+3. Combine with the flying folder prank for maximum effect!
+
+**⚠️ Remember:** Only use on friends who will laugh, and always clean up afterwards!
