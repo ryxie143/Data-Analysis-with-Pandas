@@ -16,7 +16,7 @@ pyinstaller --onefile --windowed --icon=ghost.ico ghost_prank.py
 
 **Manual Method:**
 1. Right-click desktop → New → Shortcut
-2. Browse to `dist\ghost_folder_prank.exe`
+2. Browse to: C:\Users\Administrator\Downloads\malware\ghost_folder\dist\ghost_prank.exe
 3. Name it "FREE GAMES" or "SECURITY SCAN"
 4. Right-click shortcut → Properties → Change Icon → Select your ghost.ico
 
