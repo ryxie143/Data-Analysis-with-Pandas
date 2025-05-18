@@ -58,7 +58,7 @@ def encrypt_file(file_path: str, key: bytes):
     with open(file_path, 'rb') as f:
         plaintext = f.read()
     
-    pad_length = 16 - (len(plaintext) % 16
+    pad_length = 16 - (len(plaintext)) % 16
     plaintext += bytes([pad_length]) * pad_length
     
     ciphertext = encryptor.update(plaintext) + encryptor.finalize()
