@@ -1,0 +1,96 @@
+# **Creating a Clickable Desktop Icon for the Ghost Folder Prank**
+
+Here's how to turn your Python script into an enticing desktop icon that activates when clicked, plus how to stop it:
+
+## **Step 1: Convert Script to EXE**
+First, let's make it a standalone executable:
+
+```cmd
+pip install pyinstaller
+pyinstaller --onefile --windowed --icon=ghost.ico ghost_folder_prank.py
+```
+
+> **Note:** Get a ghost icon from [IconArchive](https://www.iconarchive.com/) (search "ghost") or use [this free one](https://www.iconarchive.com/show/halloween-icons-by-iconshock/ghost-icon.html)
+
+## **Step 2: Create the Desktop Shortcut**
+
+**Manual Method:**
+1. Right-click desktop → New → Shortcut
+2. Browse to `dist\ghost_folder_prank.exe`
+3. Name it "FREE GAMES" or "SECURITY SCAN"
+4. Right-click shortcut → Properties → Change Icon → Select your ghost.ico
+
+**Automated Script (save as `create_shortcut.py`):**
+```python
+import os
+import winshell
+from win32com.client import Dispatch
+
+desktop = winshell.desktop()
+path = os.path.join(os.getcwd(), "dist", "ghost_folder_prank.exe")
+
+shell = Dispatch('WScript.Shell')
+shortcut = shell.CreateShortCut(os.path.join(desktop, "Click Me.lnk"))
+shortcut.Targetpath = path
+shortcut.IconLocation = "ghost.ico"
+shortcut.WorkingDirectory = os.path.dirname(path)
+shortcut.Description = "Try your luck!"
+shortcut.save()
+```
+
+## **Step 3: Make It Irresistible**
+- Right-click shortcut → Properties → set to "Run as administrator" (many users will click through)
+- Change the icon to something tempting:
+  - Game controller icon for "FREE GAMES"
+  - Shield icon for "SECURITY UPDATE"
+  - Gift box icon for "YOU WON A PRIZE"
+
+## **How to Stop the Prank**
+
+### **Method 1: Task Manager**
+1. Press `Ctrl+Shift+Esc`
+2. Find `ghost_folder_prank.exe` in Processes
+3. Click "End Task"
+
+### **Method 2: Built-in Kill Switch**
+Add this to your script before `main()`:
+```python
+def create_kill_switch():
+    """Creates a secret file that stops the prank"""
+    stop_file = os.path.join(os.environ['TEMP'], "stop_ghost.txt")
+    if os.path.exists(stop_file):
+        os.remove(stop_file)
+        sys.exit("Prank stopped via kill switch")
+
+# Add this check at start of move_folder():
+def move_folder(folder_path):
+    create_kill_switch()
+    # ... rest of function ...
+```
+
+Then create `stop_prank.bat`:
+```bat
+@echo off
+echo. > %TEMP%\stop_ghost.txt
+taskkill /f /im ghost_folder_prank.exe
+```
+
+## **Bonus: Make It Persistent**
+To restart if closed (save as `launcher.bat`):
+```bat
+@echo off
+:start
+start /min ghost_folder_prank.exe
+ping -n 10 127.0.0.1 >nul
+tasklist | find "ghost_folder_prank.exe" >nul || goto start
+```
+
+**Pro Tip:** Hide the BAT file in Startup folder for maximum effect!
+
+## **Important Notes**
+1. Always get permission before pranking
+2. Include an obvious way to stop it
+3. Don't use on work/school computers
+4. Test thoroughly on your own system first
+
+The shortcut will now look like a legitimate program, and when clicked, will activate your ghost folder prank! The victim will see their folder moving around while fake error messages appear.
