@@ -1,25 +1,3 @@
-(venv) PS C:\Users\Administrator\Downloads\malware\infinite_folders> python infinitefolders_prank.py
-🚀 Launching Infinite Folder Prank at: C:\INFECTED_FOLDERS
-⚠️ Warning: This will create thousands of folders!
-Press CTRL+C to stop early.
-
-⏱ Will stop after 1 minutes...
-Exception in thread Thread-1 (create_infinite_folders):
-Traceback (most recent call last):
-  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\threading.py", line 1041, in _bootstrap_inner
-    self.run()
-    ~~~~~~~~^^
-  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\threading.py", line 992, in run
-    self._target(*self._args, **self._kwargs)
-    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Administrator\Downloads\malware\infinite_folders\infinitefolders_prank.py", line 22, in create_infinite_folders
-    f.write("⚠️ YOUR FILES HAVE BEEN FOLDERIZED! ⚠️\n\n")
-    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
-    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
-           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-1: character maps to <undefined>
-
 # **Enhanced "Infinite Folder" Prank with Virus Note & Hidden Folders**
 
 Here's the complete step-by-step Python prank with all your requested features:
@@ -35,10 +13,10 @@ from threading import Thread
 
 # ===== CONFIG =====
 ROOT_FOLDER = "C:\\INFECTED_FOLDERS"  # Where the prank starts
-DELAY_SECONDS = 0.1                    # Speed of folder creation
-STOP_AFTER_MINUTES = 2                  # Auto-stop after X minutes (0=infinite)
-HIDE_FOLDERS = True                     # Make folders hidden
-ADD_VIRUS_NOTE = True                   # Add fake virus warning
+DELAY_SECONDS = 0.1                   # Speed of folder creation
+STOP_AFTER_MINUTES = 1                 # Auto-stop after X minutes (0=infinite)
+HIDE_FOLDERS = True                    # Make folders hidden
+ADD_VIRUS_NOTE = True                  # Add fake virus warning
 # ==================
 
 def create_infinite_folders():
@@ -46,17 +24,17 @@ def create_infinite_folders():
     current_path = ROOT_FOLDER
     os.makedirs(current_path, exist_ok=True)
     
-    # Add virus note if enabled
+    # Add virus note if enabled (with proper encoding)
     if ADD_VIRUS_NOTE:
         virus_note = os.path.join(current_path, "!!!WARNING!!!.txt")
-        with open(virus_note, "w") as f:
-            f.write("⚠️ YOUR FILES HAVE BEEN FOLDERIZED! ⚠️\n\n")
+        with open(virus_note, "w", encoding="utf-8") as f:  # FIX: Added encoding
+            f.write("!!! YOUR FILES HAVE BEEN FOLDERIZED !!!\n\n")
             f.write("This is the work of the INFINITE FOLDER VIRUS!\n")
             f.write("To remove this virus, you must:\n")
             f.write("1. Bring me 10 pieces of candy\n")
             f.write("2. Say 'I believe in folder ghosts'\n")
             f.write("3. Restart your computer 3 times\n\n")
-            f.write("Good luck! 😈")
+            f.write("Good luck! >:D")  # Replaced emoji with ASCII
     
     # Hide the root folder if enabled
     if HIDE_FOLDERS:
@@ -72,8 +50,8 @@ def create_infinite_folders():
             break
 
 def main():
-    print(f"🚀 Launching Infinite Folder Prank at: {ROOT_FOLDER}")
-    print("⚠️ Warning: This will create thousands of folders!")
+    print(f"Launching Infinite Folder Prank at: {ROOT_FOLDER}")
+    print("Warning: This will create thousands of folders!")
     print("Press CTRL+C to stop early.\n")
     
     # Run in background thread
@@ -81,10 +59,10 @@ def main():
     
     # Auto-stop timer
     if STOP_AFTER_MINUTES > 0:
-        print(f"⏱ Will stop after {STOP_AFTER_MINUTES} minutes...")
+        print(f"Will stop after {STOP_AFTER_MINUTES} minutes...")
         time.sleep(STOP_AFTER_MINUTES * 60)
     else:
-        print("♾ Running FOREVER until stopped...")
+        print("Running FOREVER until stopped...")
         while True:
             time.sleep(1)
 
@@ -92,10 +70,10 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n🛑 Prank stopped by user!")
+        print("\nPrank stopped by user!")
     finally:
-        print(f"📁 Created folders up to: {ROOT_FOLDER}\\ANOTHER_FOLDER\\...")
-        print("💡 To delete: rmdir /s /q", f'"{ROOT_FOLDER}"')
+        print(f"Created folders up to: {ROOT_FOLDER}\\ANOTHER_FOLDER\\...")
+        print("To delete: rmdir /s /q", f'"{ROOT_FOLDER}"')
 ```
 
 ## **Step 3: Run the Prank**
