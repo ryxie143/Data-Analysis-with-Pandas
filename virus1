@@ -1,5 +1,18 @@
-# **Enhanced "Flying Ghost Folder" Prank with Fake Virus Alert**  
-*(Harmless Python Script for Windows – Educational Use Only!)*  
+Install PyInstaller:
+
+cmd
+pip install pyinstaller
+Create the executable (no console window):
+
+cmd
+pyinstaller --onefile --windowed --icon=ghost.ico ghost_folder_prank.py
+--onefile: Creates single .exe
+
+--windowed: No console window
+
+--icon: Optional ghost icon (create or download one)
+
+Find your executable in the dist folder
 
 **⚠️ WARNING:** Only use with **friends who will find it funny** and **never on real systems without permission!**  
 
