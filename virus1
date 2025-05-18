@@ -1,10 +1,12 @@
 # Ghost Prank
 
-# Step 1: Make a new folder and name it virus1
+# Step 1: Make a new folder (preferrably in downnloads folder) and name it malware
+- Inside the malware folder add a new folder again and name it virus1
 
 ---
 
 # Step 2: Setup your Virtual Environment
+Open vs code of your project folder (which is the malware folder) and paste this:
 ```bash
 python -m venv
 ```
@@ -126,4 +128,28 @@ Run it:
 ## How to Stop It
 - Press **CTRL + C** in the terminal.  
 
+
+## Creating a Clickable Desktop Icon 
+
+### Step 1: Convert Script to EXE
+
+- Navigate to this link: https://www.iconarchive.com/
+- Search your desired icon. For example: ghost
+- Click All Downloads Format
+- Choose Windows: Download ICO
+- Rename the file into ghost
+- Move the ghost.ico to your folder
+
+In your terminal, paste this:
+```cmd
+pip install pyinstaller
+pyinstaller --onefile --windowed --icon=ghost.ico ghost_prank.py
+```
+
+--- 
+
+### Step 2: Create the Desktop Shortcut
+- Right-click desktop → New → Shortcut
+- Browse to: C:\Users\Administrator\Downloads\malware\ghost_folder\dist\ghost_prank.exe
+- Name it "TRICK OR TREAT"
 
