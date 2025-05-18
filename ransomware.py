@@ -134,7 +134,7 @@ if __name__ == '__main__':
 
 1. **Encrypt test files** (in your safe test environment):
    ```bash
-   python ransomware_edu_demo.py encrypt ~/ransomware_test/target_files "my_password123"
+   python ransomware_edu_demo.py encrypt "C:\Users\Administrator\Downloads\test-folder" "test123"
    ```
    - This will create `.encrypted` versions of all files
    - Generate a `READ_ME.txt` with decryption instructions
