@@ -1,34 +1,21 @@
-PS C:\Users\Administrator\Downloads\malware> python ransomware_edu_demo.py encrypt ~/ransomware_test/target_files
-usage: ransomware_edu_demo.py [-h] {encrypt,decrypt} path password [salt_hex]
-ransomware_edu_demo.py: error: the following arguments are required: password
-
-# How to Run the Educational Ransomware Demo (For Learning Only)
-
-**Important Reminder:** This is strictly for educational purposes in a controlled environment. Never use this against real systems or without explicit permission.
+# How to Run the Ransomware Demo 
 
 ## Step 1: Set Up a Safe Testing Environment
 
 1. Create a virtual machine (recommended: VirtualBox or VMware)
-2. Install Python 3.8+ on the VM
-3. Create a dedicated test folder with dummy files:
-   ```
-   mkdir -p ~/ransomware_test/target_files
-   cp ~/Documents/*.txt ~/ransomware_test/target_files/  # Copy some unimportant text files
-   ```
+2. Install Python on the VM
+3. Create a dedicated test folder with dummy files
+4. Open your vs code and your ransomware folder
 
 ## Step 2: Install Required Packages
-
+Go to the terminal and type:
 ```bash
 pip install cryptography
 ```
 
 ## Step 3: Create the Project Structure
-
-1. Create the files exactly as shown in the previous structure
-2. Or download this simplified single-file version for testing:
-
+Make a file and name it ransomware.py
 ```python
-# ransomware_edu_demo.py (SIMPLIFIED VERSION FOR TESTING)
 import os
 import hashlib
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -133,13 +120,23 @@ if __name__ == '__main__':
 ## Step 4: Running the Demo
 
 1. **Encrypt test files** (in your safe test environment):
+In the terminal run this code to encrypt the desired folder:
+```bash
+python ransomware.py encrypt "PATH-FOLDER-OF-YOUR-TEST-FILES" "PASSWORD-FOR-ENCRYPTION"
+```
+For example:
    ```bash
-   python ransomware_edu_demo.py encrypt "C:\Users\Administrator\Downloads\test-folder" "test123"
+   python ransomware.py encrypt "C:\Users\Administrator\Downloads\test-folder" "test123"
    ```
    - This will create `.encrypted` versions of all files
    - Generate a `READ_ME.txt` with decryption instructions
 
 2. **Decrypt test files** (after studying the encryption):
+In the terminal run this code to encrypt the desired folder:
+```bash
+python ransomware.py decrypt "PATH-FOLDER-OF-YOUR-TEST-FILES" "PASSWORD-FOR-ENCRYPTION"
+```
+For example:
    ```bash
    python ransomware_edu_demo.py decrypt ~/Downloads/test-files "my_password123" "a1b2c3d4e5f6..."
    ```
