@@ -7,7 +7,7 @@ First, let's make it a standalone executable:
 
 ```cmd
 pip install pyinstaller
-pyinstaller --onefile --windowed --icon=ghost.ico ghost_folder_prank.py
+pyinstaller --onefile --windowed --icon=ghost.ico ghost_prank.py
 ```
 
 > **Note:** Get a ghost icon from [IconArchive](https://www.iconarchive.com/) (search "ghost") or use [this free one](https://www.iconarchive.com/show/halloween-icons-by-iconshock/ghost-icon.html)
