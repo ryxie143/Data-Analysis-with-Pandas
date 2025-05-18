@@ -1,0 +1,127 @@
+# **Step-by-Step: Desktop Flip Prank (Python)**
+
+This prank flips the screen upside down, making the mouse move in reverse directions - perfect for a harmless tech prank!
+
+## **Step 1: Install Required Library**
+```cmd
+pip install pywin32
+```
+
+## **Step 2: Create the Script (`desktop_flip.py`)**
+```python
+import ctypes
+import time
+import sys
+from ctypes.wintypes import BOOL, DWORD, HANDLE
+
+# ===== CONFIG =====
+FLIP_DURATION = 30  # How long to stay flipped (seconds)
+# ==================
+
+def flip_screen(degrees):
+    """Rotates the screen using Windows API"""
+    try:
+        # Load required DLLs
+        user32 = ctypes.WinDLL('user32')
+        gdi32 = ctypes.WinDLL('gdi32')
+        
+        # Define necessary structures
+        class _DISPLAY_DEVICE(ctypes.Structure):
+            _fields_ = [
+                ('cb', DWORD),
+                ('DeviceName', ctypes.c_wchar * 32),
+                ('DeviceString', ctypes.c_wchar * 128),
+                ('StateFlags', DWORD),
+                ('DeviceID', ctypes.c_wchar * 128),
+                ('DeviceKey', ctypes.c_wchar * 128)
+            ]
+        
+        # Get display device
+        disp_dev = _DISPLAY_DEVICE()
+        disp_dev.cb = ctypes.sizeof(disp_dev)
+        
+        # Get current display settings
+        devmode = ctypes.create_string_buffer(156)
+        ctypes.memset(devmode, 0, 156)
+        devmode[0:2] = b'\x1C\x00'  # Set dmSize and dmDriverExtra
+        
+        # Try to rotate all displays
+        for i in range(4):  # Try first 4 displays
+            if user32.EnumDisplayDevicesW(None, i, ctypes.byref(disp_dev), 0):
+                if user32.EnumDisplaySettingsW(disp_dev.DeviceName, -1, devmode):
+                    # Modify orientation
+                    devmode[104:108] = degrees.to_bytes(4, 'little')  # dmDisplayOrientation
+                    user32.ChangeDisplaySettingsExW(
+                        disp_dev.DeviceName,
+                        devmode,
+                        None,
+                        0x00000001 | 0x00000004,  # CDS_UPDATEREGISTRY | CDS_NORESET
+                        None
+                    )
+        
+        # Apply changes to all displays
+        user32.ChangeDisplaySettingsExW(None, None, None, 0, None)
+        return True
+    except:
+        return False
+
+def main():
+    print("=== Desktop Flip Prank ===")
+    print(f"Screen will flip for {FLIP_DURATION} seconds")
+    print("Press CTRL+C to abort early\n")
+    
+    try:
+        # Flip screen upside down (180 degrees)
+        if flip_screen(180):
+            print("Screen flipped successfully!")
+            print("Watch them struggle with upside-down controls!")
+            
+            # Countdown timer
+            for i in range(FLIP_DURATION, 0, -1):
+                print(f"Time remaining: {i} seconds", end='\r')
+                time.sleep(1)
+            
+            # Restore original orientation
+            flip_screen(0)
+            print("\nScreen orientation restored!")
+        else:
+            print("Failed to flip screen (graphics driver may not support rotation)")
+    except KeyboardInterrupt:
+        flip_screen(0)  # Ensure we restore if aborted
+        print("\nPrank aborted - screen restored")
+
+if __name__ == "__main__":
+    main()
+```
+
+## **Step 3: Customize the Prank**
+1. Adjust `FLIP_DURATION` for how long the screen stays flipped
+2. Change the degree value (try 90 or 270 for sideways flips)
+3. Add a startup delay if you want to hide the console first
+
+## **Step 4: Run the Prank**
+```cmd
+python desktop_flip.py
+```
+
+## **How It Works**
+1. Uses Windows Display API to change screen orientation
+2. Flips display 180 degrees (upside down)
+3. Mouse movements become inverted
+4. Automatically restores after set duration
+
+## **Pro Tips**
+- Combine with other pranks like fake errors for maximum effect
+- For laptops, this affects the touchpad too!
+- Works best on systems with Intel graphics (most widely supported)
+
+**⚠️ Important:** 
+- Always test first on your own machine
+- Some graphics drivers may not support rotation
+- Never use on work/school computers without permission
+
+## **Bonus: One-Liner Version**
+For quick testing, you can use this PowerShell command:
+```powershell
+python -c "import ctypes; ctypes.windll.user32.ChangeDisplaySettingsExW(None, None, None, 0x00000001|0x00000004, None); [System.Threading.Thread]::Sleep(30000); ctypes.windll.user32.ChangeDisplaySettingsExW(None, None, None, 0, None)"
+```
