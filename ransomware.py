@@ -134,25 +134,9 @@ For example:
 2. **Decrypt test files** (after studying the encryption):
 In the terminal run this code to encrypt the desired folder:
 ```bash
-python ransomware.py decrypt "PATH-FOLDER-OF-YOUR-TEST-FILES" "PASSWORD-FOR-ENCRYPTION"
+python ransomware.py decrypt "PATH-FOLDER-OF-YOUR-TEST-FILES" "PASSWORD-FOR-DECRYPTION"
 ```
 For example:
    ```bash
-   python ransomware_edu_demo.py decrypt ~/Downloads/test-files "my_password123" "a1b2c3d4e5f6..."
-   ```
+  python ransomware_edu_demo.py decrypt "C:\Users\Administrator\Downloads\test-folder" "test123" "73c6facae62c119134994cb0287e7c7c"   ```
 
-## Safety Precautions
-
-1. Only run on a virtual machine with no network connection
-2. Only encrypt files you created specifically for testing
-3. Delete all test files and VM after completing your study
-4. Never use real passwords you use elsewhere
-
-## What You Should Learn From This
-
-1. How symmetric encryption works
-2. The importance of proper key management
-3. Why ransomware is so damaging
-4. How to build defenses against such attacks
-
-Would you like me to explain any specific part of the code in more detail or suggest defensive programming techniques against such attacks?
