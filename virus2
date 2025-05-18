@@ -12,35 +12,32 @@ import time
 from threading import Thread
 
 # ===== CONFIG =====
-ROOT_FOLDER = "C:\\INFECTED_FOLDERS"  # Where the prank starts
-DELAY_SECONDS = 0.1                   # Speed of folder creation
-STOP_AFTER_MINUTES = 1                 # Auto-stop after X minutes (0=infinite)
-HIDE_FOLDERS = True                    # Make folders hidden
-ADD_VIRUS_NOTE = True                  # Add fake virus warning
+ROOT_NAME = "INFECTED_FOLDERS"  # Folder name on Desktop
+DELAY_SECONDS = 0.5             # Speed of creation (0.5s is good for visibility)
+STOP_AFTER_MINUTES = 1          # Auto-stop after X minutes (0=infinite)
+ADD_VIRUS_NOTE = True           # Add fake warning file
 # ==================
 
 def create_infinite_folders():
-    """Creates never-ending nested folders"""
-    current_path = ROOT_FOLDER
-    os.makedirs(current_path, exist_ok=True)
+    """Creates visible nested folders on Desktop"""
+    desktop = os.path.join(os.path.expanduser("~"), "Desktop")
+    root_path = os.path.join(desktop, ROOT_NAME)
+    current_path = root_path
     
-    # Add virus note if enabled (with proper encoding)
+    os.makedirs(root_path, exist_ok=True)
+    
+    # Add virus note
     if ADD_VIRUS_NOTE:
-        virus_note = os.path.join(current_path, "!!!WARNING!!!.txt")
-        with open(virus_note, "w", encoding="utf-8") as f:  # FIX: Added encoding
-            f.write("!!! YOUR FILES HAVE BEEN FOLDERIZED !!!\n\n")
-            f.write("This is the work of the INFINITE FOLDER VIRUS!\n")
-            f.write("To remove this virus, you must:\n")
-            f.write("1. Bring me 10 pieces of candy\n")
-            f.write("2. Say 'I believe in folder ghosts'\n")
-            f.write("3. Restart your computer 3 times\n\n")
-            f.write("Good luck! >:D")  # Replaced emoji with ASCII
-    
-    # Hide the root folder if enabled
-    if HIDE_FOLDERS:
-        os.system(f'attrib +h "{ROOT_FOLDER}"')
-    
-    # Start creating infinite folders
+        warning_file = os.path.join(root_path, "!!!READ_ME!!!.txt")
+        with open(warning_file, "w") as f:
+            f.write("YOUR DESKTOP HAS BEEN INFECTED!\n\n")
+            f.write("This is the INFINITE FOLDER VIRUS!\n")
+            f.write("To remove it, you must:\n")
+            f.write("1. Scream 'I BELIEVE IN FOLDER GHOSTS!'\n")
+            f.write("2. Bring me candy\n\n")
+            f.write("Good luck! >:D\n")
+
+    # Create infinite subfolders
     while True:
         try:
             current_path = os.path.join(current_path, "ANOTHER_FOLDER")
@@ -50,30 +47,25 @@ def create_infinite_folders():
             break
 
 def main():
-    print(f"Launching Infinite Folder Prank at: {ROOT_FOLDER}")
-    print("Warning: This will create thousands of folders!")
-    print("Press CTRL+C to stop early.\n")
+    print(f"🚀 Creating infinite folders on Desktop: {ROOT_NAME}")
+    print("👀 Watch them appear in real-time!")
+    print("🛑 Press CTRL+C to stop early\n")
     
-    # Run in background thread
     Thread(target=create_infinite_folders, daemon=True).start()
     
-    # Auto-stop timer
     if STOP_AFTER_MINUTES > 0:
-        print(f"Will stop after {STOP_AFTER_MINUTES} minutes...")
         time.sleep(STOP_AFTER_MINUTES * 60)
     else:
-        print("Running FOREVER until stopped...")
-        while True:
-            time.sleep(1)
+        while True: time.sleep(1)
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\nPrank stopped by user!")
+        print("\n🛑 Prank stopped manually!")
     finally:
-        print(f"Created folders up to: {ROOT_FOLDER}\\ANOTHER_FOLDER\\...")
-        print("To delete: rmdir /s /q", f'"{ROOT_FOLDER}"')
+        print(f"📁 Created folders at: Desktop/{ROOT_NAME}")
+        print("🧹 To delete: Right-click folder → Delete")
 ```
 
 ## **Step 3: Run the Prank**
